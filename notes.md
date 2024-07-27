@@ -17,8 +17,8 @@ played in cli.
 
 word-game/
 ├── cmd/
-│   └── server/
-│   |   └── main.go
+│   ├── server/
+│   │   └── main.go
 │   └── client/
 │       └── main.go
 ├── internal/
@@ -34,7 +34,7 @@ word-game/
 │   │   └── websocket.go
 │   ├── client/
 │   │   ├── client.go
-│   │   └── ui.go│   
+│   │   └── ui.go
 │   └── summary/
 │       └── generator.go
 ├── pkg/
