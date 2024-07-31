@@ -46,7 +46,7 @@ func (g *Game) Start() error {
 
 func (g *Game) nextRound() error {
 	g.Round++
-	if g.Round > 10 {
+	if g.Round > 50 {
 		return errors.New("game over: max rounds reached")
 	}
 
@@ -99,7 +99,7 @@ func (g *Game) GetCurrentPlayer() *Player {
 }
 
 func (g *Game) IsGameOver() bool {
-	return !g.IsActive || g.Round > 10 || g.TimeLimit < 5*time.Second
+	return !g.IsActive || g.Round > 50 || g.TimeLimit < 5*time.Second
 }
 
 func (g *Game) GetWinner() *Player {
