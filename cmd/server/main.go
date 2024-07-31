@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/IsaacWLloyd/storyd/internal/game"
@@ -17,7 +18,7 @@ import (
 type Server struct {
 	router   *mux.Router
 	upgrader websocket.Upgrader
-	lobbies  map[string]*Lobby
+	lobbies  map[string]*game.Lobby
 }
 
 func NewServer() *Server {
@@ -30,23 +31,22 @@ func NewServer() *Server {
 				return true
 			},
 		},
-		lobbies: make(map[string]*Lobby),
+		lobbies: make(map[string]*game.Lobby),
 	}
 
-	s.setupRoutes()
 	return s
 }
 
-func (s *Server) setupRoutes() {
+func (s *Server) SetupRoutes() {
 	s.router.HandleFunc("/lobbies/{id}", s.GetLobby).Methods("GET")
 	s.router.HandleFunc("/lobbies", s.CreateLobby).Methods("POST")
-	s.router.HandleFunc("/lobbies/{id}/join", s.JoinLobby).Methods("POST")
-	s.router.HandleFunc("/ws", s.handleWebSocket)
+	//s.router.HandleFunc("/lobbies/{id}/join", s.JoinLobby).Methods("POST")
+	//s.router.HandleFunc("/ws", s.handleWebSocket)
 }
 
 func (s *Server) GetLobby(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id = vars["id"]
+	id := vars["id"]
 
 	lobby, exists := s.lobbies[id]
 	if !exists {
@@ -59,7 +59,7 @@ func (s *Server) GetLobby(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) CreateLobby(w http.ResponseWriter, r *http.Request) {
-	var lobbyResponce struct {
+	var lobbyRequest struct {
 		ID string `json:"id"`
 	}
 
@@ -73,7 +73,7 @@ func (s *Server) CreateLobby(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	lobby := lobby.NewLobby(lobbyRequest.ID)
+	lobby := game.NewLobby(lobbyRequest.ID, 20)
     s.lobbies[lobbyRequest.ID] = lobby
 
 	response := map[string]interface{}{
@@ -87,11 +87,11 @@ func (s *Server) CreateLobby(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	gameServer := server.NewServer()
+	gameServer := NewServer()
+	gameServer.SetupRoutes()
 	
-
 	fmt.Println("starting server on :8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", gameServer.router); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
