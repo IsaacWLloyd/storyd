@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
-	"github.com/IsaacLloyd/storyd/internal/game"
+	"github.com/IsaacWLloyd/storyd/internal/game"
 )
 
 type Server struct {

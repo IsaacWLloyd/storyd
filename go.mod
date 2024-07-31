@@ -1,4 +1,4 @@
-module github.com/IsaacLloyd/stroryd
+module github.com/IsaacWLloyd/storyd
 
 go 1.22.5
 
